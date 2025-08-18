@@ -1,0 +1,938 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Electronics Store API",
+    "description": "A comprehensive API for an electronics e-commerce store with shopping cart functionality, user authentication, and purchase validation",
+    "version": "2.0.0",
+    "contact": {
+      "name": "API Support",
+      "email": "support@techstore.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    },
+    {
+      "url": "https://api.techstore.com",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Get Store Homepage",
+        "description": "Returns the main store page HTML with pagination (9 products per page)",
+        "tags": ["Pages"],
+        "responses": {
+          "200": {
+            "description": "Store homepage HTML",
+            "content": {
+              "text/html": {
+                "example": "<!DOCTYPE html><html>...</html>"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cart": {
+      "get": {
+        "summary": "Get Shopping Cart Page",
+        "description": "Returns the shopping cart page HTML with authentication requirements for high-value purchases",
+        "tags": ["Pages"],
+        "responses": {
+          "200": {
+            "description": "Shopping cart page HTML",
+            "content": {
+              "text/html": {
+                "example": "<!DOCTYPE html><html>...</html>"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "summary": "Get All Products (Paginated)",
+        "description": "Retrieve a paginated list of all available electronics products (9 products per page, 18 total)",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number (default: 1)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of products retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "products": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                },
+                "example": {
+                  "products": [
+                    {
+                      "id": 1,
+                      "name": "Wireless Bluetooth Headphones",
+                      "description": "High-quality wireless headphones with noise cancellation",
+                      "price": 89.99,
+                      "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop"
+                    }
+                  ],
+                  "pagination": {
+                    "currentPage": 1,
+                    "totalPages": 2,
+                    "totalProducts": 18,
+                    "hasNextPage": true,
+                    "hasPrevPage": false
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cart": {
+      "get": {
+        "summary": "Get Shopping Cart",
+        "description": "Retrieve the current contents of the shopping cart",
+        "tags": ["Shopping Cart"],
+        "responses": {
+          "200": {
+            "description": "Cart contents retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CartItem"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Wireless Bluetooth Headphones",
+                    "price": 89.99,
+                    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop",
+                    "quantity": 2
+                  }
+                ]
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cart/add": {
+      "post": {
+        "summary": "Add Product to Cart",
+        "description": "Add a product to the shopping cart with initial quantity of 1",
+        "tags": ["Shopping Cart"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["productId"],
+                "properties": {
+                  "productId": {
+                    "type": "integer",
+                    "description": "ID of the product to add to cart",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product added to cart successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "cart": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CartItem"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "cart": [
+                    {
+                      "id": 1,
+                      "name": "Wireless Bluetooth Headphones",
+                      "price": 89.99,
+                      "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop",
+                      "quantity": 1
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing productId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Product not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cart/update": {
+      "put": {
+        "summary": "Update Product Quantity",
+        "description": "Update the quantity of a product in the cart. If quantity is 0 or less, the item is removed.",
+        "tags": ["Shopping Cart"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["productId", "quantity"],
+                "properties": {
+                  "productId": {
+                    "type": "integer",
+                    "description": "ID of the product to update",
+                    "example": 1
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "description": "New quantity for the product",
+                    "minimum": 0,
+                    "example": 3
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product quantity updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "cart": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CartItem"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "cart": [
+                    {
+                      "id": 1,
+                      "name": "Wireless Bluetooth Headphones",
+                      "price": 89.99,
+                      "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop",
+                      "quantity": 3
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found in cart",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Item not found in cart"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cart/remove": {
+      "delete": {
+        "summary": "Remove Product from Cart",
+        "description": "Remove a product completely from the shopping cart",
+        "tags": ["Shopping Cart"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["productId"],
+                "properties": {
+                  "productId": {
+                    "type": "integer",
+                    "description": "ID of the product to remove",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product removed from cart successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "cart": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CartItem"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "cart": []
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing productId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cart/checkout": {
+      "post": {
+        "summary": "Complete Purchase",
+        "description": "Complete the purchase and clear the shopping cart. Authentication required for purchases $500.00 or more.",
+        "tags": ["Shopping Cart"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sessionToken": {
+                    "type": "string",
+                    "description": "User session token (required for purchases >= $500.00)",
+                    "example": "abc123def456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Purchase completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Purchase completed successfully!"
+                    },
+                    "totalAmount": {
+                      "type": "number",
+                      "description": "Total amount of the purchase",
+                      "example": 789.98
+                    },
+                    "authenticated": {
+                      "type": "boolean",
+                      "description": "Whether the user was authenticated during purchase",
+                      "example": true
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Purchase completed successfully!",
+                  "totalAmount": 789.98,
+                  "authenticated": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required for high-value purchase",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Authentication required for purchases $500.00 or more"
+                    },
+                    "requiresAuth": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "totalAmount": {
+                      "type": "number",
+                      "example": 789.98
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Authentication required for purchases $500.00 or more",
+                  "requiresAuth": true,
+                  "totalAmount": 789.98
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "User Login",
+        "description": "Authenticate user with email and password",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "User email address",
+                    "example": "test@test.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password",
+                    "example": "test123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Login successful"
+                    },
+                    "sessionToken": {
+                      "type": "string",
+                      "description": "Session token for authenticated requests",
+                      "example": "abc123def456"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "example": "test@test.com"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Login successful",
+                  "sessionToken": "abc123def456",
+                  "user": {
+                    "email": "test@test.com"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing email or password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Email and password are required"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Invalid credentials"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "summary": "User Logout",
+        "description": "Logout user and invalidate session token",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["sessionToken"],
+                "properties": {
+                  "sessionToken": {
+                    "type": "string",
+                    "description": "Session token to invalidate",
+                    "example": "abc123def456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Logout successful"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Logout successful"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid session token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Invalid session token"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/verify": {
+      "get": {
+        "summary": "Verify Session Token",
+        "description": "Verify if a session token is valid and get user information",
+        "tags": ["Authentication"],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session token is valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "example": "test@test.com"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "user": {
+                    "email": "test@test.com"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or expired session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Invalid or expired session"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Product": {
+        "type": "object",
+        "required": ["id", "name", "description", "price", "image"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the product",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the product",
+            "example": "Wireless Bluetooth Headphones"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the product",
+            "example": "High-quality wireless headphones with noise cancellation"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "description": "Price of the product in USD",
+            "minimum": 0,
+            "example": 89.99
+          },
+          "image": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the product image",
+            "example": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop"
+          }
+        }
+      },
+      "CartItem": {
+        "type": "object",
+        "required": ["id", "name", "price", "image", "quantity"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Product ID",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the product",
+            "example": "Wireless Bluetooth Headphones"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "description": "Price per unit in USD",
+            "minimum": 0,
+            "example": 89.99
+          },
+          "image": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the product image",
+            "example": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Quantity of the product in cart",
+            "minimum": 1,
+            "example": 2
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "currentPage": {
+            "type": "integer",
+            "description": "Current page number",
+            "example": 1
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Total number of pages",
+            "example": 2
+          },
+          "totalProducts": {
+            "type": "integer",
+            "description": "Total number of products",
+            "example": 18
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Whether there is a next page",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Whether there is a previous page",
+            "example": false
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong",
+            "example": "Product not found"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Bearer token for authentication (e.g., 'Bearer abc123def456')"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Pages",
+      "description": "HTML page endpoints"
+    },
+    {
+      "name": "Products",
+      "description": "Product management endpoints with pagination"
+    },
+    {
+      "name": "Shopping Cart",
+      "description": "Shopping cart management endpoints with authentication requirements"
+    },
+    {
+      "name": "Authentication",
+      "description": "User authentication and session management endpoints"
+    }
+  ],
+  "externalDocs": {
+    "description": "Find more info about TechStore",
+    "url": "https://github.com/yourusername/electronics-store"
+  }
+}
