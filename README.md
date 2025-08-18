@@ -27,14 +27,12 @@ A modern, responsive web application for an electronics e-commerce store featuri
 
 ## Requirements Implementation
 
-✅ **R01 - Adding a product to the cart**: Users can add products with initial quantity of 1
-✅ **R02 - Removing a product from the cart**: Trash icon removal with confirmation dialog
-✅ **R03 - Change product quantity**: +/- buttons for quantity adjustment
-✅ **R04 - Shopping cart display**: Complete cart information with subtotals and total
-✅ **R05 - Purchase completion**: Success message upon checkout
-✅ **R06 - Product pagination**: 9 products per page, 2 pages total (18 products)
-✅ **R07 - User authentication**: Login system with test@test.com account
-✅ **R08 - Purchase validation**: Authentication required for purchases >= $500.00
+✅ R01 - Adding a product to the cart: Users can add products with initial quantity of 1
+✅ R02 - Removing a product from the cart: Trash icon removal with confirmation dialog
+✅ R03 - Change product quantity: +/- buttons for quantity adjustment
+✅ R04 - Shopping cart display: Complete cart information with subtotals and total
+✅ R05 - Product pagination: 9 products per page, 2 pages total (18 products)
+✅ R06 - Purchase validation: Authentication required for purchases >= $500.00
 
 ## Technical Stack
 
