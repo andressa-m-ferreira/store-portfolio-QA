@@ -8,14 +8,27 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
     "cors": "^2.8.5",
+    "express": "^4.18.2",
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
+    "cypress": "^14.5.1",
     "nodemon": "^3.0.1"
   },
-  "keywords": ["e-commerce", "shopping-cart", "electronics"],
+  "keywords": [
+    "e-commerce",
+    "shopping-cart",
+    "electronics"
+  ],
   "author": "Andressa M Ferreira Silva",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andressa-m-ferreira/store-portfolio-QA.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andressa-m-ferreira/store-portfolio-QA/issues"
+  },
+  "homepage": "https://github.com/andressa-m-ferreira/store-portfolio-QA#readme"
 }
