@@ -225,10 +225,3 @@ This is a portfolio project, but suggestions and improvements are welcome!
 Use this account to test the authentication features and high-value purchase validation.
 
 
-
-## Test Account
-
-**Email**: test@test.com  
-**Password**: test123
-
-Use this account to test the authentication features and high-value purchase validation.
