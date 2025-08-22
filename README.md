@@ -1,4 +1,4 @@
-# Electronics E-commerce Store with Shopping Cart
+# TechStore - store and cart
 
 A modern, responsive web application for an electronics e-commerce store featuring a comprehensive shopping cart system, user authentication, and purchase validation. Built with HTML, CSS, JavaScript, and Express.js.
 
@@ -27,24 +27,33 @@ A modern, responsive web application for an electronics e-commerce store featuri
 
 ## Requirements Implementation
 
-✅ R01 - Adding a product to the cart: Users can add products with initial quantity of 1
-✅ R02 - Removing a product from the cart: Trash icon removal with confirmation dialog
-✅ R03 - Change product quantity: +/- buttons for quantity adjustment
-✅ R04 - Shopping cart display: Complete cart information with subtotals and total
-✅ R05 - Product pagination: 9 products per page, 2 pages total (18 products)
-✅ R06 - Purchase validation: Authentication required for purchases >= $500.00
+- ✅ R01 - Adding a product to the cart: Users can add products with initial quantity of 1
+- ✅ R02 - Removing a product from the cart: Trash icon removal with confirmation dialog
+- ✅ R03 - Change product quantity: +/- buttons for quantity adjustment
+- ✅ R04 - Shopping cart display: Complete cart information with subtotals and total
+- ✅ R05 - Product pagination: 9 products per page, 2 pages total (18 products)
+- ✅ R06 - Purchase validation: Authentication required for purchases >= $500.00
 
-## Technical Stack
+## Project Highlights: Challenges & Achievements
 
-- **Frontend**: HTML5, CSS3, Vanilla JavaScript (ES6+)
-- **Backend**: Node.js with Express.js
-- **Styling**: Modern CSS with Flexbox, Grid, and responsive design
-- **Icons**: Font Awesome for beautiful UI elements
-- **Images**: Unsplash for high-quality product images
-- **API Documentation**: Swagger/OpenAPI 3.0 with Swagger UI
-- **Authentication**: Session-based user authentication system
+This project served as a comprehensive endeavor to demonstrate proficiency in Quality Assurance and test automation, addressing several key challenges:
+
+*   **Leveraging Generative AI for Project Foundation:** The initial phase involved utilizing Generative AI to define project requisites and facilitate the application's foundational build, streamlining the setup process and ensuring alignment with modern development practices.
+
+*   **Strategic Test Planning & Case Design:** A robust test strategy was meticulously planned, encompassing various testing types. Detailed test cases were designed and documented in the project's Wiki, ensuring comprehensive coverage of functionalities and user journeys.
+    *    Wiki: [Test Plans and Test Cases](https://github.com/andressa-m-ferreira/store-portfolio-QA/wiki/Test-plan-and-test-cases)
+
+*   **Efficient Test Execution & Defect Reporting:** Tests were systematically executed, and any identified defects were thoroughly reported, contributing to the overall stability and quality of the application.
+
+*   **Front-end Test Automation with Cypress:** Critical front-end functionalities were automated using Cypress, ensuring rapid and reliable regression testing for the user interface and user experience. This automation significantly reduced manual testing effort and accelerated feedback cycles.
+
+*   **Performance Test Automation with K6:** To assess the application's resilience and responsiveness under load, performance tests were automated using K6. This included scripting scenarios for key API endpoints and user flows, providing insights into the system's behavior under various load conditions.
+
+These efforts collectively ensured a high-quality application and demonstrated a full lifecycle approach to software quality, from requirements definition to advanced test automation.
+
 
 ## Project Structure
+
 
 ```
 store/
@@ -57,6 +66,13 @@ store/
 │   ├── styles.css       # Main stylesheet
 │   ├── script.js        # Store page functionality
 │   └── cart.js          # Cart page functionality
+├── cypress/             # End-to-end tests with Cypress
+│   ├── e2e/             # Cypress test files
+│   ├── fixtures/        # Test data for Cypress
+│   └── support/         # Support files for Cypress
+└── K6-tests/            # Performance tests with K6
+    ├── get_products.js  # K6 script for product endpoint
+    └── login_and_add_to_cart.js # K6 script for login and add to cart
 └── README.md            # Project documentation
 ```
 
@@ -180,13 +196,6 @@ The project includes comprehensive API documentation powered by Swagger UI:
 - Session-based authentication system
 - Purchase amount validation
 
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
 ## Future Enhancements
 
 - User registration and account management
@@ -198,9 +207,7 @@ The project includes comprehensive API documentation powered by Swagger UI:
 - Password recovery system
 - User profile management
 
-## License
 
-MIT License - feel free to use this project for your portfolio or learning purposes.
 
 ## Contributing
 
@@ -209,6 +216,15 @@ This is a portfolio project, but suggestions and improvements are welcome!
 ---
 
 **Note**: This is a demonstration project for portfolio purposes. The shopping cart data and user sessions are stored in memory and will reset when the server restarts.
+
+## Test Account
+
+**Email**: test@test.com  
+**Password**: test123
+
+Use this account to test the authentication features and high-value purchase validation.
+
+
 
 ## Test Account
 
